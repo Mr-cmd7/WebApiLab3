@@ -4,6 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddAuthorization();
@@ -49,33 +50,33 @@ app.MapPost("/login", async (User loginData, ModelDB db) =>
 
     return Results.Json(response);
 });
-app.MapGet("api/tariff", async (ModelDB db) => await db.Tariff.ToListAsync());
-app.MapGet("api/tariff/{id:int}", async (int id, ModelDB db) =>
+app.MapGet("api/tariff", [Authorize] async (ModelDB db) => await db.Tariff.ToListAsync());
+app.MapGet("api/tariff/{id:int}", [Authorize] async (int id, ModelDB db) =>
 {
     Tariff? tariff = await db.Tariff.FirstOrDefaultAsync(x => x.Id == id);
     if (tariff == null) return Results.NotFound(new { message = "Tariff not found" });
     return Results.Json(tariff);
 });
-app.MapGet("api/parcel", async (ModelDB db) => await db.Parcel.ToListAsync());
-app.MapGet("api/parcel/{id:int}", async (int id, ModelDB db) =>
+app.MapGet("api/parcel", [Authorize] async (ModelDB db) => await db.Parcel.ToListAsync());
+app.MapGet("api/parcel/{id:int}", [Authorize] async (int id, ModelDB db) =>
 {
     Parcel? parcel = await db.Parcel.FirstOrDefaultAsync(x => x.Id == id);
     if (parcel == null) return Results.NotFound(new { message = "Parcel not found" });
     return Results.Json(parcel);
 });
-app.MapPost("/api/tariff", async (Tariff tariff, ModelDB db) =>
+app.MapPost("/api/tariff", [Authorize] async (Tariff tariff, ModelDB db) =>
 {
     await db.Tariff.AddAsync(tariff);
     await db.SaveChangesAsync();
     return tariff;
 });
-app.MapPost("/api/parcel", async (Parcel parcel, ModelDB db) =>
+app.MapPost("/api/parcel", [Authorize] async (Parcel parcel, ModelDB db) =>
 {
     await db.Parcel.AddAsync(parcel);
     await db.SaveChangesAsync();
     return parcel;
 });
-app.MapDelete("api/tariff/{id:int}", async (int id, ModelDB db) =>
+app.MapDelete("api/tariff/{id:int}", [Authorize] async (int id, ModelDB db) =>
 {
     Tariff? tariff = await db.Tariff.FirstOrDefaultAsync(x => x.Id == id);
     if (tariff == null) return Results.NotFound(new { message = "Tariff not found" });
@@ -83,7 +84,7 @@ app.MapDelete("api/tariff/{id:int}", async (int id, ModelDB db) =>
     await db.SaveChangesAsync();
     return Results.Json(tariff);
 });
-app.MapDelete("api/parcel/{id:int}", async (int id, ModelDB db) =>
+app.MapDelete("api/parcel/{id:int}", [Authorize] async (int id, ModelDB db) =>
 {
     Parcel? parcel = await db.Parcel.FirstOrDefaultAsync(x => x.Id == id);
     if (parcel == null) return Results.NotFound(new { message = "Parcel not found" });
@@ -91,7 +92,7 @@ app.MapDelete("api/parcel/{id:int}", async (int id, ModelDB db) =>
     await db.SaveChangesAsync();
     return Results.Json(parcel);
 });
-app.MapPut("/api/tariff", async (Tariff tariffData, ModelDB db) =>
+app.MapPut("/api/tariff", [Authorize] async (Tariff tariffData, ModelDB db) =>
 {
     Tariff? tariff = await db.Tariff.FirstOrDefaultAsync(u => u.Id == tariffData.Id);
     if (tariff == null) return Results.NotFound(new { message = "Tariff not found" });
@@ -101,7 +102,7 @@ app.MapPut("/api/tariff", async (Tariff tariffData, ModelDB db) =>
     await db.SaveChangesAsync();
     return Results.Json(tariff);
 });
-app.MapPut("/api/parcel", async (Parcel parcelData, ModelDB db) =>
+app.MapPut("/api/parcel", [Authorize] async (Parcel parcelData, ModelDB db) =>
 {
     Parcel? parcel = await db.Parcel.FirstOrDefaultAsync(u => u.Id == parcelData.Id);
     if (parcel == null) return Results.NotFound(new { message = "Parcel not found" });
