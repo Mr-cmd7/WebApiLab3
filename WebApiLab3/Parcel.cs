@@ -12,8 +12,6 @@ namespace WebApiLab3
         [Required]
         public string DepartureCode { get; set; }
         [Required]
-        public string DepartureName { get; set; }
-        [Required]
         public decimal Weight { get; set; }
         [Required]
         public string Destination { get; set; }

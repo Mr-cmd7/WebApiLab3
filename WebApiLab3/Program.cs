@@ -108,7 +108,6 @@ app.MapPut("/api/parcel", [Authorize] async (Parcel parcelData, ModelDB db) =>
     if (parcel == null) return Results.NotFound(new { message = "Parcel not found" });
     parcel.SenderFullName = parcelData.SenderFullName;
     parcel.DepartureCode = parcelData.DepartureCode;
-    parcel.DepartureName = parcelData.DepartureName;
     parcel.Weight = parcelData.Weight;
     parcel.Destination = parcelData.Destination;
     parcel.Cost = parcelData.Cost;
